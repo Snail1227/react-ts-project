@@ -7,7 +7,7 @@ type SignUpProps = {
 export function SignUp( { handleCreateUser}: SignUpProps ) {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState(""); 
 
     const filledData = fullName && email && password;
 
