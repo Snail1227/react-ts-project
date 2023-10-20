@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import React from "react";
 
 export function SignIn({ onSignIn }) {
     const [emailInput, setEmail] = useState("");
@@ -19,11 +20,13 @@ export function SignIn({ onSignIn }) {
         }).then(() => {
             toast.success(`${emailInput} LoggedIn`)
         }).catch(
-            (e) => {
+            (e: Error) => {
                 toast.error(e.message)
             }
         )
     }
+
+
 
     return (
         <>

@@ -1,9 +1,9 @@
 export const baseUrl = "http://localhost:3000/users";
 
 type User = {
-  fullName: string;
+  fullName?: string;
   email: string;
-  password: string;
+  password?: string;
 };
 
 export const Requests = {
@@ -18,24 +18,35 @@ export const Requests = {
         email: email,
         password: password,
       }),
-    }).then((response) => response.json());
+    })
+    .then((response) => response.json())
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to create user');
+      }
+  });
+
   },
 
-  logInUser: ( { email }: User) => {
+  logInUser: ({ email, password}: User) => {
     return fetch(baseUrl)
       .then((response) => {
-        if(!response.ok) {
-            throw new Error("Could not get user");
+        if (!response.ok) {
+          throw new Error("Could not get user");
         }
         return response.json();
       })
       .then((users) => {
-        const user = users.find((user: any) => user.email === email);
-        if(!user) {
-            throw new Error("User Not found");
+        const user = users.find((user: User) => user.email === email);
+        if (!user) {
+          throw new Error("User Not found");
         }
+  
+        if (user.password !== password) {
+          throw new Error("Invalid Password");
+        }
+  
         return user;
       });
-  },
-
+  }
 };

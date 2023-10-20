@@ -23,6 +23,24 @@
       "email": "podorsemenov@gmail.com",
       "password": "1234",
       "id": "SM6lqaf"
+    },
+    {
+      "fullName": "ilya glushkov",
+      "email": "glushkov@gmail.com",
+      "password": "1234",
+      "id": "vMICYx8"
+    },
+    {
+      "fullName": "den gorditsa",
+      "email": "gordinta@gmail.com",
+      "password": "1234",
+      "id": "ZS2F55N"
+    },
+    {
+      "fullName": "nikita kuligin",
+      "email": "kuligin@gmail.com",
+      "password": "1234",
+      "id": "hZPTJYx"
     }
   ]
 }

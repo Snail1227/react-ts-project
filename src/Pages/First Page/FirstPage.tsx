@@ -1,4 +1,3 @@
-import { UserMainPage } from "../main/UserMainPage";
 import { SignIn } from "./SignIn";
 import { SignUp } from "./SignUp";
 
@@ -11,12 +10,7 @@ export function FirstPage({ isLogged, showSignUp, handleLogin, handleCreateUser,
             <div>
                 {showSignUp ? (
                     <SignUp handleCreateUser={handleCreateUser} />
-                ) : isLogged ? (
-                    <UserMainPage />
-                ) : (
-                    <SignIn onSignIn={handleLogin} />
-                )}
-                
+                ) : !isLogged && (<SignIn onSignIn={handleLogin} />)}
             </div>
             {!isLogged && <button onClick={handleChangeForm}>{changeButtonText}</button>}
         </div>  
