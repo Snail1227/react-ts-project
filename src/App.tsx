@@ -9,41 +9,36 @@ type User = {
   email: string;
   fullName?: string;
   password?: string;
+  id?:string;
 };
 
 export default function App() {
   const [showSignUp, setShowSignUp] = useState(false);
 
-  const storedUser = JSON.parse(localStorage.getItem('User') || '{}');
-  const [isLogged, setIsLogged] = useState(false);
-  const [userLogged, setUserLogged] = useState<User | null>(null);
-
+  const storedUserString = localStorage.getItem('User');
+  const [userLogged, setUserLogged] = useState(
+    storedUserString ? JSON.parse(storedUserString) : null
+  );
 
   useEffect(() => {
-    const refreshedPage = ((window.performance as any).navigation.type === (window.performance as any).navigation.TYPE_RELOAD);
-    const zxc = localStorage.getItem('User')
-    console.log(localStorage.getItem('User'))
-  
-    if (refreshedPage) {
-      setUserLogged(zxc)
-    }
-    
+    if (storedUserString) {
+      const storedUser: User = JSON.parse(storedUserString);
+      setUserLogged(storedUser)
+    } 
   }, [])
 
-  const handleChangeForm = () => {
-    setShowSignUp(prevState => !prevState);
+
+  const handleChangeForm = async () => {
+    await setShowSignUp(prevState => !prevState);
   };
 
-  const handleCreateUser = (newUser) => {
-    Requests.createUser(newUser)
+  const handleCreateUser = async (newUser) => {
+   await Requests.createUser(newUser) 
   }
 
   const handleLogin = async ({email, password}) => {
-    
     const user = await Requests.logInUser({email, password});
-    console.log(user)
     if (user) {
-      setIsLogged(true);
       setUserLogged(user);
       localStorage.setItem('User', JSON.stringify(user));
     }
@@ -51,27 +46,25 @@ export default function App() {
 
   const handleSignOut = () => {
     localStorage.removeItem("User");
-    setIsLogged(false);
     setUserLogged(null)
   }
-
-  console.log(userLogged?.fullName)
+  
 
   return ( 
     <>
       <Toaster/>
        
       <FirstPage 
-        isLogged={isLogged}
+        isLogged={storedUserString}
         showSignUp={showSignUp}
         handleLogin={handleLogin}
         handleCreateUser={handleCreateUser}
         handleChangeForm={handleChangeForm}
         />
-      {isLogged && 
+      {storedUserString && 
       <UserMainPage
-        userNameLoggedIn={userLogged}
-        isLogged={isLogged}
+        userLoggedIn={userLogged}
+        isLogged={storedUserString}
         handleSignOut={handleSignOut}
        />}
     </>

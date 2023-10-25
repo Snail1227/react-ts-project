@@ -1,5 +1,6 @@
 import { useState } from "react"
 import toast from "react-hot-toast";
+import React from "react";
 
 type SignUpProps = {
     handleCreateUser: (userData: { fullName: string; email: string; password: string }) => Promise<void>;
@@ -26,14 +27,13 @@ export function SignUp( { handleCreateUser}: SignUpProps ) {
             handleCreateUser({
                 fullName: fullName,
                 email: email,
-                password: password
-            })
-            .then(() => {
-                toast.success(`Created ${fullName}`);
+                password: password,
+            }).then(() => {
+                toast.success(`${fullName} created successfully`);
               })
               .catch((e: Error) => {
                 toast.error(e.message);
-              });
+              });  
         }
         handleReset();
     }
@@ -45,7 +45,6 @@ export function SignUp( { handleCreateUser}: SignUpProps ) {
             action="" 
             onSubmit={handleSubmit}
         >
-            <h3></h3>
             <h1>Sign Up</h1>
             <input 
                 type="text"

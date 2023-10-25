@@ -2,7 +2,11 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import React from "react";
 
-export function SignIn({ onSignIn }) {
+type SignInProps = {
+    handleCreateUser: (userData: { fullName: string; email: string; password: string }) => Promise<void>;
+  };
+
+export function SignIn( { onSignIn }: SignInProps ) {
     const [emailInput, setEmail] = useState("");
     const [passwordInput, setPassword] = useState("");
 
@@ -18,15 +22,15 @@ export function SignIn({ onSignIn }) {
             email: emailInput,
             password: passwordInput
         }).then(() => {
-            toast.success(`${emailInput} LoggedIn`)
+            toast.success(`${emailInput} successfully logged In`);
+            handleReset();
         }).catch(
             (e: Error) => {
                 toast.error(e.message)
             }
         )
+        
     }
-
-
 
     return (
         <>
@@ -35,7 +39,6 @@ export function SignIn({ onSignIn }) {
             action="" 
             onSubmit={handleSubmit}
         >
-            <h3></h3>
             <h1>Sign In</h1>
             <input 
                 type="email"
@@ -49,7 +52,7 @@ export function SignIn({ onSignIn }) {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
              />
-             <button type="submit">Log In</button>
+             <button type="submit">Sign In</button>
         </form>
         </>
     )
