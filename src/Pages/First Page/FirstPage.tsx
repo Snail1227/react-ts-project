@@ -12,7 +12,7 @@ export function FirstPage({
   const changeButtonText = showSignUp
     ? "Change to Sign In"
     : "Change to Sign Up";
-
+    
   return (
     <div className="form">
       <div >

@@ -40,9 +40,35 @@ export const Requests = {
       return response.json()  
     })
   },
+  checkSameEmail: ({ email }: User) => {
+    return fetch(`${baseUrl}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to create user');
+      } 
+      return response.json();
+    })
+    .then((users) => {
+      const checkEmail = users.find((user: User) => user.email === email);
+      if (checkEmail) {
+        throw new Error(`${email} is already in use`);
+      }
+      return true
+    })
+  },
 
   logInUser: ({ email, password}: User) => {
-    return fetch(`${baseUrl}/users`)
+    return fetch(`${baseUrl}/users`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Could not get user");
@@ -78,7 +104,7 @@ export const Requests = {
       })
   },
 
-  getFavoriteGame: () => {
+  getGame: () => {
     return fetch(`${baseUrl}/favoriteGame`, {
       method: "GET",
       headers: {
@@ -95,6 +121,20 @@ export const Requests = {
         return games
           
     });
+  },
+  getFavoriteGame: ({gameId}: FavoriteGameEntry) => {
+    return fetch(`${baseUrl}/games/${gameId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Could not game with ID ${gameId}`);
+        }
+        return response.json();
+    })
   },
 
   addFavoriteGame: ({ userId, gameId }: User) => {

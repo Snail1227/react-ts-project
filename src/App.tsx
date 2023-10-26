@@ -33,7 +33,11 @@ export default function App() {
   };
 
   const handleCreateUser = async (newUser) => {
-   await Requests.createUser(newUser) 
+    const sameEmail = await Requests.checkSameEmail(newUser);
+    console.log(sameEmail)
+    if (!sameEmail) {
+      await Requests.createUser(newUser);
+    } 
   }
 
   const handleLogin = async ({email, password}) => {

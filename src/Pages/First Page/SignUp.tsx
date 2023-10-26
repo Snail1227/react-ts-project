@@ -30,12 +30,13 @@ export function SignUp( { handleCreateUser}: SignUpProps ) {
                 password: password,
             }).then(() => {
                 toast.success(`${fullName} created successfully`);
+                handleReset();
               })
               .catch((e: Error) => {
                 toast.error(e.message);
               });  
         }
-        handleReset();
+        
     }
 
     return (

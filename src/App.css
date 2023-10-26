@@ -64,7 +64,7 @@
   font-weight: bold;
 }
 
-.welcome-top {
+.top {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row;
@@ -80,7 +80,7 @@
 
 .game-card {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   flex-direction: column;
   align-items: center;
   width: 250px;
@@ -116,4 +116,29 @@
   background: border-box;
   border: 0;
   color: #747bff;
+}
+
+.game-name {
+  display: flex;
+  align-items: center;
+}
+
+
+.welcome-top {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.online-shopping {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  
+}
+
+.active-cart {
+  border-radius: 20%;
+  background-color: #646cffaa;
 }
