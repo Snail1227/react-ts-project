@@ -29,8 +29,10 @@ export function Games({
   findUserId: number;
   isCartActive: boolean;
 }) {
-  const [allFavoriteGamesIds, setAllFavoriteGamesIds] = useState<FavoriteGame[]>([]);
-  const [allFavoriteGames, setAllFavoriteGames] = useState<Game[]>([])
+  const [allFavoriteGamesIds, setAllFavoriteGamesIds] = useState<
+    FavoriteGame[]
+  >([]);
+  const [allFavoriteGames, setAllFavoriteGames] = useState<Game[]>([]);
   const GamesToShow = isCartActive ? allFavoriteGames : allGames;
 
   useEffect(() => {
@@ -39,13 +41,13 @@ export function Games({
 
   useEffect(() => {
     if (isCartActive) {
-      const gameIds = allFavoriteGamesIds.map(game => game.gameId);
-      const fundGame = allGames.filter((game) => gameIds.includes(game.id))
-      setAllFavoriteGames(fundGame)
+      const gameIds = allFavoriteGamesIds.map((game) => game.gameId);
+      const fundGame = allGames.filter((game) => gameIds.includes(game.id));
+      setAllFavoriteGames(fundGame);
     } else {
-      setAllFavoriteGames([])
+      setAllFavoriteGames([]);
     }
-  }, [isCartActive, allFavoriteGamesIds, allGames])
+  }, [isCartActive, allFavoriteGamesIds, allGames]);
 
   const handleAddFavoriteGame = (addGame: number) => {
     const newFavoriteGame: FavoriteGame = {
@@ -70,8 +72,6 @@ export function Games({
   };
 
   const handleRemoveFavoriteGame = (deleteGame: number) => {
-    console.log(`this delete game ${deleteGame}`);
-
     const updatedFavorites = allFavoriteGamesIds.filter(
       (entry) => entry.gameId !== deleteGame
     );
@@ -79,7 +79,7 @@ export function Games({
     const removeFavoriteGame = allFavoriteGamesIds
       .filter((entry) => entry.gameId === deleteGame)
       .map((entry) => entry.id);
-      
+
     const deleteFavoriteGame: FavoriteGame = {
       userId: findUserId,
       gameId: deleteGame,
@@ -87,8 +87,7 @@ export function Games({
     };
 
     Requests.removeFavoriteGame({ removeFavoriteGame }).catch((err) => {
-      toast
-      .error("Error removing favorite game:", err);
+      toast.error("Error removing favorite game:", err);
       setAllFavoriteGamesIds((prevGames) => [...prevGames, deleteFavoriteGame]);
     });
   };

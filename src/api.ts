@@ -24,7 +24,6 @@ type GetGameRequest = {
 };
 
 export const Requests = {
-
   createUser: ({ fullName, email, password }: User) => {
     return fetch(`${baseUrl}/users`, {
       method: "POST",
@@ -36,37 +35,36 @@ export const Requests = {
         email: email,
         password: password,
       }),
-    })
-    .then(response => {
+    }).then((response) => {
       if (!response.ok) {
-          throw new Error('Failed to create user');
+        throw new Error("Failed to create user");
       }
-      return response.json()  
-    })
+      return response.json();
+    });
   },
   checkSameEmail: ({ email }: User) => {
     return fetch(`${baseUrl}/users`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
     })
-    .then(response => response.json())
-    .then((users) => {
-      const checkEmail = users.find((user: User) => user.email === email);
-      if (checkEmail) {
-        throw new Error(`${email} is already in use`);
-      }
-      return false
-    })
+      .then((response) => response.json())
+      .then((users) => {
+        const checkEmail = users.find((user: User) => user.email === email);
+        if (checkEmail) {
+          throw new Error(`${email} is already in use`);
+        }
+        return false;
+      });
   },
 
-  logInUser: ({ email, password}: User) => {
+  logInUser: ({ email, password }: User) => {
     return fetch(`${baseUrl}/users`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
     })
       .then((response) => {
         if (!response.ok) {
@@ -79,11 +77,11 @@ export const Requests = {
         if (!user) {
           throw new Error("User Not found");
         }
-  
+
         if (user.password !== password) {
           throw new Error("Invalid Password");
         }
-  
+
         return user;
       });
   },
@@ -93,33 +91,34 @@ export const Requests = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error("Could not get games");
       }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Could not get games");
-        }
-        return response.json();
-      })
+      return response.json();
+    });
   },
 
-  getGame: ( {findUserId}: GetGameRequest) => {
+  getGame: ({ findUserId }: GetGameRequest) => {
     return fetch(`${baseUrl}/favoriteGame`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
+      },
     })
-    .then((response) => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error("Could not get favorite games");
         }
         return response.json();
-    })
-    .then((games: FavoriteGameEntry[]) => {
-      const findFavoriteGames = games.filter((user) => user.userId === findUserId)
-      return findFavoriteGames     
-    });
+      })
+      .then((games: FavoriteGameEntry[]) => {
+        const findFavoriteGames = games.filter(
+          (user) => user.userId === findUserId
+        );
+        return findFavoriteGames;
+      });
   },
   addFavoriteGame: ({ userId, gameId }: User) => {
     return fetch(`${baseUrl}/favoriteGame`, {
@@ -131,30 +130,26 @@ export const Requests = {
         userId: userId,
         gameId: gameId,
       }),
-    })
-    .then(response => {
+    }).then((response) => {
       if (!response.ok) {
-          throw new Error('Failed to add favorite game');
+        throw new Error("Failed to add favorite game");
       }
-      return response.json()  
-    })
+      return response.json();
+    });
   },
 
-  removeFavoriteGame: ({removeFavoriteGame}: FavoriteGameDeleteRequest) => {
+  removeFavoriteGame: ({ removeFavoriteGame }: FavoriteGameDeleteRequest) => {
     return fetch(`${baseUrl}/favoriteGame/${removeFavoriteGame}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-      }
-    })
-    .then(response => {
-      console.log()
+      },
+    }).then((response) => {
+      console.log();
       if (!response.ok) {
-          throw new Error('Failed to delete favorite game');
+        throw new Error("Failed to delete favorite game");
       }
-      return 'Successfully deleted favorite game'; 
-    })
-    
-  }
-
+      return "Successfully deleted favorite game";
+    });
+  },
 };

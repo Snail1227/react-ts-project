@@ -9,8 +9,8 @@ type UserCredentials = {
 };
 
 type FirstPageProps = {
-  isLogged: boolean;
-  showSignUp: boolean; 
+  isLogged: () => void;
+  showSignUp: boolean;
   handleLogin: (credentials: UserCredentials) => Promise<void>;
   handleCreateUser: (credentials: UserCredentials) => Promise<void>;
   handleChangeForm: () => void;
@@ -21,12 +21,12 @@ export function FirstPage({
   isLogged,
   handleLogin,
   handleCreateUser,
-  isLoading
+  isLoading,
 }: FirstPageProps) {
   const [showSignUp, setShowSignUp] = useState(false);
 
   const handleChangeForm = () => {
-    setShowSignUp(prevState => !prevState);
+    setShowSignUp((prevState) => !prevState);
   };
   const changeButtonText = showSignUp
     ? "Change to Sign In"
@@ -42,13 +42,10 @@ export function FirstPage({
         )}
       </div>
       {!isLogged && (
-        <button 
-          className="logIn-signUp" 
-          onClick={handleChangeForm}>
+        <button className="logIn-signUp" onClick={handleChangeForm}>
           {changeButtonText}
         </button>
       )}
     </div>
   );
 }
-
