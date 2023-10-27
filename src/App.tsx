@@ -13,8 +13,8 @@ type User = {
 };
 
 export default function App() {
-  const [showSignUp, setShowSignUp] = useState(false);
-
+  
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const storedUserString = localStorage.getItem('User');
   const [userLogged, setUserLogged] = useState(
     storedUserString ? JSON.parse(storedUserString) : null
@@ -28,31 +28,32 @@ export default function App() {
   }, [])
 
 
-  const handleChangeForm = async () => {
-    await setShowSignUp(prevState => !prevState);
-  };
+  const withLoading =
+    (func) =>
+    async (...args) => {
+      setIsLoading(true);
+      try {
+        await func(...args);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleCreateUser = async (newUser) => {
+
+  const handleCreateUser = withLoading(async (newUser: User) => {
     const sameEmail = await Requests.checkSameEmail(newUser);
-    console.log(sameEmail)
     if (!sameEmail) {
       await Requests.createUser(newUser);
     } 
-  }
+  })
 
-  const handleLogin = async ({email, password}) => {
+  const handleLogin = withLoading(async ({email, password}: User) => {
     const user = await Requests.logInUser({email, password});
     if (user) {
       setUserLogged(user);
       localStorage.setItem('User', JSON.stringify(user));
     }
-  };
-
-  const handleSignOut = () => {
-    localStorage.removeItem("User");
-    setUserLogged(null)
-  }
-  
+  });
 
   return ( 
     <>
@@ -60,16 +61,18 @@ export default function App() {
        
       <FirstPage 
         isLogged={storedUserString}
-        showSignUp={showSignUp}
         handleLogin={handleLogin}
         handleCreateUser={handleCreateUser}
-        handleChangeForm={handleChangeForm}
+        isLoading={isLoading}
         />
       {storedUserString && 
       <UserMainPage
+        isLoading={isLoading}
         userLoggedIn={userLogged}
         isLogged={storedUserString}
-        handleSignOut={handleSignOut}
+        userSignOut={() => {
+          setUserLogged(null);
+        }}
        />}
     </>
   )

@@ -2,11 +2,19 @@ import { useState } from "react"
 import toast from "react-hot-toast";
 import React from "react";
 
-type SignUpProps = {
-    handleCreateUser: (userData: { fullName: string; email: string; password: string }) => Promise<void>;
+type UserCredentials = {
+    fullName: string;
+    email: string;
+    password: string;
   };
 
-export function SignUp( { handleCreateUser}: SignUpProps ) {
+type SignUpProps = {
+    handleCreateUser: (credentials: UserCredentials) => Promise<void>;
+    isLoading: boolean;
+};
+  
+
+export function SignUp( { handleCreateUser, isLoading }: SignUpProps) {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState(""); 
@@ -66,7 +74,7 @@ export function SignUp( { handleCreateUser}: SignUpProps ) {
                 onChange={(e) => setPassword(e.target.value)}
             />
 
-             <button type="submit">Sign Up</button>
+             <button type="submit" disabled={isLoading}>Sign Up</button>
         </form>
         </>
     )

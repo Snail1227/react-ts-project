@@ -2,47 +2,44 @@ import { Requests } from "../../api";
 import { Games } from "./Games";
 import { useState, useEffect } from "react";
 
-export function UserMainPage( { userLoggedIn, isLogged, handleSignOut } ) {
+type Game = {
+    id: number;
+    name: string;
+    image: string;
+    releaseDate: string;
+    developer: string;
+  };
+  
+  type User = {
+    id: number;
+    fullName: string;
+  };
+  
+type UserMainPageProps = {
+    userLoggedIn: User;
+    isLogged: string;
+    userSignOut: (user?: any) => void;
+    isLoading: boolean;
+};
+  
+
+export function UserMainPage( { userLoggedIn, isLogged, userSignOut, isLoading }: UserMainPageProps) {
     const userId = userLoggedIn?.id
     const userName = userLoggedIn?.fullName;
-    const [allGames, setAllGames] = useState([]);
+    const [allGames, setAllGames] = useState<Game[]>([]);
     const [isCartActive, setIsCartActive] = useState(false);
 
-    const handleCard  = () => {
-        setIsCartActive(!isCartActive);
-        favoriteGames();
-    }
-
-    // const favoriteGames = (games) => {
-    //     const gameIds = games.map(game => game.gameId);
-    //     fetchFavoriteGames(gameIds)
-    //       .then(favoriteGames);
-    //   };
-
-    // const fetchFavoriteGames = (gameIds) => {
-    //     return Promise.all(gameIds.map(gameId => Requests.getFavoriteGame(gameId)))
-    //       .then(favoriteGames => {
-    //         console.log("Favorite Games: ", favoriteGames);
-    //         return favoriteGames;
-    //       })
-    //       .catch(error => {
-    //         console.error("Error fetching favorite games: ", error);
-    //       });
-    //   };
-
-
-
     useEffect(() => {
-        handleGames();
+        Requests.showGames().then(setAllGames) // to set state all games
     }, [])
 
-    const handleGames = () => {
-        Requests.showGames().then(setAllGames)
+    const handleSignOut = () => {
+        localStorage.removeItem("User");
+        userSignOut()
     }
-    // 
 
     return (
-        <div>
+        <div className="container">
             <div className="top">
                 <div className="welcome-top">
                     <div>Welcome, {userName} !</div>
@@ -51,16 +48,25 @@ export function UserMainPage( { userLoggedIn, isLogged, handleSignOut } ) {
                         src="src\Pictures\online-shopping.png" 
                         alt="online-shopping"
                         onClick={() => {
-                            handleCard();
+                            setIsCartActive(!isCartActive);
                         }}
                     />
                 </div>
-                {isLogged && <button className="sign-out" onClick={handleSignOut}>Sign Out</button> }
+                {isLogged && 
+                <button 
+                    className="sign-out" 
+                    onClick={() => {
+                        handleSignOut()
+                    }}
+                    >
+                    Sign Out
+                </button> }
             </div>
             <Games 
                 allGames={allGames}
                 findUserId={userId}
-                favoriteGames={favoriteGames}
+                isCartActive={isCartActive}
+                isLoading={isLoading}
             />
             
         </div>

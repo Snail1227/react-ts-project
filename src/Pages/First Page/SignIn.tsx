@@ -2,11 +2,17 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import React from "react";
 
-type SignInProps = {
-    handleCreateUser: (userData: { fullName: string; email: string; password: string }) => Promise<void>;
+type SignInCredentials = {
+    email: string;
+    password: string;
   };
 
-export function SignIn( { onSignIn }: SignInProps ) {
+type SignInProps = {
+    onSignIn: (credentials: SignInCredentials) => Promise<void>;
+    isLoading: boolean;
+  };
+
+export function SignIn( { onSignIn, isLoading }: SignInProps) {
     const [emailInput, setEmail] = useState("");
     const [passwordInput, setPassword] = useState("");
 
@@ -52,7 +58,7 @@ export function SignIn( { onSignIn }: SignInProps ) {
                 placeholder="Password"
                 onChange={(e) => setPassword(e.target.value)}
              />
-             <button type="submit">Sign In</button>
+             <button type="submit" disabled={isLoading} >Sign In</button>
         </form>
         </>
     )

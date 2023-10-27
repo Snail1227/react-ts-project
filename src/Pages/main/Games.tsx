@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GameCard } from "../../Shared/GameCard";
 import { Requests } from "../../api";
+import toast from "react-hot-toast";
 
 type Game = {
   id: number;
@@ -21,39 +22,48 @@ export function Games({
   allGames,
   isLoading,
   findUserId,
-  favoriteGames
+  isCartActive,
 }: {
   allGames: Game[];
   isLoading: boolean;
   findUserId: number;
-  favoriteGames: any;
+  isCartActive: boolean;
 }) {
-  const [allFavoriteGames, setAllFavoriteGames] = useState<FavoriteGame[]>([]);
-
-  favoriteGames(allFavoriteGames)
+  const [allFavoriteGamesIds, setAllFavoriteGamesIds] = useState<FavoriteGame[]>([]);
+  const [allFavoriteGames, setAllFavoriteGames] = useState<Game[]>([])
+  const GamesToShow = isCartActive ? allFavoriteGames : allGames;
 
   useEffect(() => {
-    Requests.getGame({ findUserId }).then(setAllFavoriteGames);
+    Requests.getGame({ findUserId }).then(setAllFavoriteGamesIds);
   }, [findUserId]);
 
+  useEffect(() => {
+    if (isCartActive) {
+      const gameIds = allFavoriteGamesIds.map(game => game.gameId);
+      const fundGame = allGames.filter((game) => gameIds.includes(game.id))
+      setAllFavoriteGames(fundGame)
+    } else {
+      setAllFavoriteGames([])
+    }
+  }, [isCartActive, allFavoriteGamesIds, allGames])
 
   const handleAddFavoriteGame = (addGame: number) => {
     const newFavoriteGame: FavoriteGame = {
       userId: findUserId,
       gameId: addGame,
     };
-    setAllFavoriteGames((prevGames) => [...prevGames, newFavoriteGame]);
+    setAllFavoriteGamesIds((prevGames) => [...prevGames, newFavoriteGame]);
 
     Requests.addFavoriteGame({ userId: findUserId, gameId: addGame })
       .then((response: FavoriteGame) => {
-        setAllFavoriteGames((prevGames) => [
+        setAllFavoriteGamesIds((prevGames) => [
           ...prevGames.filter((game) => game.gameId !== addGame),
           response,
         ]);
       })
       .catch((err) => {
-        console.error("Error adding favorite game:", err);
-        setAllFavoriteGames((prevGames) =>
+        toast.error("Error adding favorite game:", err);
+        setAllFavoriteGamesIds((prevGames) =>
           prevGames.filter((game) => game.gameId !== addGame)
         );
       });
@@ -62,14 +72,14 @@ export function Games({
   const handleRemoveFavoriteGame = (deleteGame: number) => {
     console.log(`this delete game ${deleteGame}`);
 
-    const updatedFavorites = allFavoriteGames.filter(
+    const updatedFavorites = allFavoriteGamesIds.filter(
       (entry) => entry.gameId !== deleteGame
     );
-    const removeFavoriteGame = allFavoriteGames
+    setAllFavoriteGamesIds(updatedFavorites);
+    const removeFavoriteGame = allFavoriteGamesIds
       .filter((entry) => entry.gameId === deleteGame)
       .map((entry) => entry.id);
-    setAllFavoriteGames(updatedFavorites);
-
+      
     const deleteFavoriteGame: FavoriteGame = {
       userId: findUserId,
       gameId: deleteGame,
@@ -77,23 +87,23 @@ export function Games({
     };
 
     Requests.removeFavoriteGame({ removeFavoriteGame }).catch((err) => {
-      console.error("Error removing favorite game:", err);
-      setAllFavoriteGames((prevGames) => [...prevGames, deleteFavoriteGame]);
+      toast
+      .error("Error removing favorite game:", err);
+      setAllFavoriteGamesIds((prevGames) => [...prevGames, deleteFavoriteGame]);
     });
   };
 
   return (
     <div className="cards-folder">
-      {allGames.map((item) => (
+      {GamesToShow.map((item) => (
         <GameCard
           game={{
             image: item.image,
             releaseDate: item.releaseDate,
             name: item.name,
             developer: item.developer,
-            price: item.price,
           }}
-          isFavorite={allFavoriteGames
+          isFavorite={allFavoriteGamesIds
             .map((game) => game.gameId)
             .includes(item.id)}
           key={item.id}

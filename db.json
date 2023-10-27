@@ -1,19 +1,54 @@
 {
   "favoriteGame": [
     {
+      "userId": 2,
+      "gameId": 1,
+      "id": 5
+    },
+    {
+      "userId": 2,
+      "gameId": 3,
+      "id": 6
+    },
+    {
+      "userId": 2,
+      "gameId": 5,
+      "id": 7
+    },
+    {
+      "userId": 2,
+      "gameId": 7,
+      "id": 8
+    },
+    {
       "userId": 3,
       "gameId": 6,
-      "id": 3
+      "id": 11
     },
     {
       "userId": 3,
-      "gameId": 4,
-      "id": 4
+      "gameId": 8,
+      "id": 12
     },
     {
       "userId": 3,
+      "gameId": 1,
+      "id": 16
+    },
+    {
+      "userId": 4,
+      "gameId": 2,
+      "id": 17
+    },
+    {
+      "userId": 4,
+      "gameId": 3,
+      "id": 18
+    },
+    {
+      "userId": 4,
       "gameId": 5,
-      "id": 5
+      "id": 21
     }
   ],
   "games": [
@@ -22,7 +57,6 @@
       "image": "./src/Pictures/halfLife.jpg",
       "releaseDate": "March 23, 2020",
       "developer": "Valve",
-      "price": 59.99,
       "id": 1
     },
     {
@@ -30,7 +64,6 @@
       "image": "./src/Pictures/godOfWar.jpg",
       "releaseDate": "April 20, 2018",
       "developer": "Santa Monica Studio",
-      "price": 59.99,
       "id": 2
     },
     {
@@ -38,7 +71,6 @@
       "image": "./src/Pictures/ForzaHorizon5.jpg",
       "releaseDate": "November 5, 2021",
       "developer": "Playground Games",
-      "price": 59.99,
       "id": 3
     },
     {
@@ -46,7 +78,6 @@
       "image": "./src/Pictures/dota2.jpg",
       "releaseDate": "July 9, 2013",
       "developer": "Valve",
-      "price": 59.99,
       "id": 4
     },
     {
@@ -54,7 +85,6 @@
       "image": "./src/Pictures/gta-5.jpg",
       "releaseDate": "September 17, 2013",
       "developer": "Rockstar North",
-      "price": 59.99,
       "id": 5
     },
     {
@@ -62,7 +92,6 @@
       "image": "./src/Pictures/redDeadRedemption.jpg",
       "releaseDate": "October 26, 2018",
       "developer": "Rockstar Games",
-      "price": 59.99,
       "id": 6
     },
     {
@@ -70,7 +99,6 @@
       "image": "./src/Pictures/tom_clancy_s_rainbow_six_siege_pc_eu_.jpg",
       "releaseDate": "December 1, 2015",
       "developer": "Ubisoft Montreal",
-      "price": 59.99,
       "id": 7
     },
     {
@@ -78,7 +106,6 @@
       "image": "./src/Pictures/Resident_Evil_4.jpg",
       "releaseDate": "March 24, 2023",
       "developer": "Capcom",
-      "price": 59.99,
       "id": 8
     }
   ],

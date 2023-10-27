@@ -1,13 +1,26 @@
 import { FavoriteButton } from "./FavoriteButton";
 import { UnfavoriteButton } from "./UnfavoriteButton";
 
+type GameCardProps = {
+    game: {
+        name: string;
+        image: string;
+        releaseDate: string;
+        developer: string;
+    };
+    isLoading: boolean;
+    onUnfavoriteClick: () => void;
+    onFavoriteClick: () => void;
+    isFavorite: boolean;
+};
+
 export const GameCard = ({
-    game: { name, image, releaseDate, developer, price},
+    game: { name, image, releaseDate, developer },
     isLoading,
     onUnfavoriteClick,
     onFavoriteClick,
     isFavorite
-}) => {
+}: GameCardProps) => {
     return (
         <div className="game-card">
             <div className="game-name">
@@ -19,7 +32,6 @@ export const GameCard = ({
             />
             <p>{releaseDate}</p>
             <p>{developer}</p>
-            <p>${price}</p>
             <br />
             {isFavorite ? (
                 <FavoriteButton
