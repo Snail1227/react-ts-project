@@ -2,26 +2,19 @@ export const baseUrl = "http://localhost:3000";
 
 type User = {
   fullName?: string;
-  email: string;
+  email?: string;
   password?: string;
   findUserId?: string;
   userId?: string;
   gameId?: number;
 };
 
-type FavoriteGameEntry = {
-  userId: string;
+export type FavoriteGameEntry = {
+  userId: number;
   gameId: number;
-  id: number;
+  id?: number;
 };
 
-type FavoriteGameDeleteRequest = {
-  removeFavoriteGame?: number;
-};
-
-type GetGameRequest = {
-  findUserId: string;
-};
 
 export const Requests = {
   createUser: ({ fullName, email, password }: User) => {
@@ -42,7 +35,7 @@ export const Requests = {
       return response.json();
     });
   },
-  checkSameEmail: ({ email }: User) => {
+  checkSameEmail: ({ newEmail }: {newEmail: string}) => {
     return fetch(`${baseUrl}/users`, {
       method: "GET",
       headers: {
@@ -51,7 +44,7 @@ export const Requests = {
     })
       .then((response) => response.json())
       .then((users) => {
-        const checkEmail = users.find((user: User) => user.email === email);
+        const checkEmail = users.find((user: string) => user.email === newEmail);
         if (checkEmail) {
           throw new Error(`${email} is already in use`);
         }
@@ -100,7 +93,7 @@ export const Requests = {
     });
   },
 
-  getGame: ({ findUserId }: GetGameRequest) => {
+  getGame: ({ findUserId }: {findUserId: number}) => {
     return fetch(`${baseUrl}/favoriteGame`, {
       method: "GET",
       headers: {
@@ -113,14 +106,14 @@ export const Requests = {
         }
         return response.json();
       })
-      .then((games: FavoriteGameEntry[]) => {
-        const findFavoriteGames = games.filter(
-          (user) => user.userId === findUserId
+      .then((favoriteGameEntries: FavoriteGameEntry[]) => {
+        const findFavoriteGames = favoriteGameEntries.filter(
+          (favoriteGameEntry) => favoriteGameEntry.userId === findUserId
         );
         return findFavoriteGames;
       });
   },
-  addFavoriteGame: ({ userId, gameId }: User) => {
+  addFavoriteGame: ({ userId, gameId }: FavoriteGameEntry) => {
     return fetch(`${baseUrl}/favoriteGame`, {
       method: "POST",
       headers: {
@@ -138,14 +131,13 @@ export const Requests = {
     });
   },
 
-  removeFavoriteGame: ({ removeFavoriteGame }: FavoriteGameDeleteRequest) => {
-    return fetch(`${baseUrl}/favoriteGame/${removeFavoriteGame}`, {
+  removeFavoriteGame: (favoriteGameId : number) => {
+    return fetch(`${baseUrl}/favoriteGame/${favoriteGameId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      console.log();
       if (!response.ok) {
         throw new Error("Failed to delete favorite game");
       }

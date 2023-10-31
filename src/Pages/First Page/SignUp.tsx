@@ -1,15 +1,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import React from "react";
-
-type UserCredentials = {
-  fullName: string;
-  email: string;
-  password: string;
-};
+import { CreateUser } from "../../App";
 
 type SignUpProps = {
-  handleCreateUser: (credentials: UserCredentials) => Promise<void>;
+  handleCreateUser: (credentials: CreateUser) => Promise<void>;
   isLoading: boolean;
 };
 

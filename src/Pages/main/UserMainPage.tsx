@@ -2,7 +2,7 @@ import { Requests } from "../../api";
 import { Games } from "./Games";
 import { useState, useEffect } from "react";
 
-type Game = {
+export type Game = {
   id: number;
   name: string;
   image: string;
@@ -16,25 +16,26 @@ type User = {
 };
 
 type UserMainPageProps = {
-  userLoggedIn: User;
-  isLogged: string;
-  userSignOut: (user?: any) => void;
+  userLogged: User;
+  isLogged: boolean;
+  userSignOut: () => void;
   isLoading: boolean;
 };
 
 export function UserMainPage({
-  userLoggedIn,
+  userLogged,
   isLogged,
   userSignOut,
   isLoading,
 }: UserMainPageProps) {
-  const userId = userLoggedIn?.id;
-  const userName = userLoggedIn?.fullName;
+  const userId = userLogged.id;
+  const userName = userLogged.fullName;
   const [allGames, setAllGames] = useState<Game[]>([]);
-  const [isCartActive, setIsCartActive] = useState(false);
+  const [isCartActive, setIsCartActive] = useState<boolean>(false);
+  const [searchInput, setSearchInput] = useState<string>("");
 
   useEffect(() => {
-    Requests.showGames().then(setAllGames); // to set state all games
+    Requests.showGames().then(setAllGames);
   }, []);
 
   const handleSignOut = () => {
@@ -42,6 +43,14 @@ export function UserMainPage({
     userSignOut();
   };
 
+  const handleGameSearch = (searchInput: string) => {
+    console.log(searchInput);
+    if (searchInput.length === 0) {
+      setSearchInput("");
+    } else {
+      setSearchInput(searchInput);
+    }
+  };
   return (
     <div className="container">
       <div className="top">
@@ -56,6 +65,13 @@ export function UserMainPage({
             }}
           />
         </div>
+        <input
+          type="text"
+          onChange={(e) => {
+            handleGameSearch(e.target.value);
+          }}
+          placeholder="Search game..."
+        />
         {isLogged && (
           <button
             className="sign-out"
@@ -72,6 +88,7 @@ export function UserMainPage({
         findUserId={userId}
         isCartActive={isCartActive}
         isLoading={isLoading}
+        searchInput={searchInput}
       />
     </div>
   );

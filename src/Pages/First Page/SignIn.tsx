@@ -1,14 +1,10 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import React from "react";
-
-type SignInCredentials = {
-  email: string;
-  password: string;
-};
+import { LogInUser } from "../../App";
 
 type SignInProps = {
-  onSignIn: (credentials: SignInCredentials) => Promise<void>;
+  onSignIn: (credentials: LogInUser) => Promise<void>;
   isLoading: boolean;
 };
 

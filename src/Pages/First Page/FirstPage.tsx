@@ -1,24 +1,17 @@
 import { useState } from "react";
 import { SignIn } from "./SignIn";
 import { SignUp } from "./SignUp";
-
-type UserCredentials = {
-  email: string;
-  password: string;
-  fullName?: string;
-};
+import { CreateUser, LogInUser } from "../../App";
 
 type FirstPageProps = {
-  isLogged: () => void;
-  showSignUp: boolean;
-  handleLogin: (credentials: UserCredentials) => Promise<void>;
-  handleCreateUser: (credentials: UserCredentials) => Promise<void>;
-  handleChangeForm: () => void;
+  userLogged: boolean;
+  handleLogin: (credentials: LogInUser) => Promise<void>;
+  handleCreateUser: (credentials: CreateUser) => Promise<void>;
   isLoading: boolean;
 };
 
 export function FirstPage({
-  isLogged,
+  userLogged,
   handleLogin,
   handleCreateUser,
   isLoading,
@@ -28,6 +21,7 @@ export function FirstPage({
   const handleChangeForm = () => {
     setShowSignUp((prevState) => !prevState);
   };
+
   const changeButtonText = showSignUp
     ? "Change to Sign In"
     : "Change to Sign Up";
@@ -38,10 +32,10 @@ export function FirstPage({
         {showSignUp ? (
           <SignUp handleCreateUser={handleCreateUser} isLoading={isLoading} />
         ) : (
-          !isLogged && <SignIn onSignIn={handleLogin} isLoading={isLoading} />
+          !userLogged && <SignIn onSignIn={handleLogin} isLoading={isLoading} />
         )}
       </div>
-      {!isLogged && (
+      {!userLogged && (
         <button className="logIn-signUp" onClick={handleChangeForm}>
           {changeButtonText}
         </button>

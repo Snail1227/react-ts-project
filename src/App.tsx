@@ -5,12 +5,16 @@ import "./App.css";
 import { FirstPage } from "./Pages/First Page/FirstPage";
 import { UserMainPage } from "./Pages/main/UserMainPage";
 
-type User = {
+export type CreateUser = {
   email: string;
-  fullName?: string;
-  password?: string;
-  id?: string;
+  fullName: string;
+  password: string;
 };
+
+export type LogInUser = {
+  email: string;
+  password: string;
+}
 
 export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -21,30 +25,33 @@ export default function App() {
 
   useEffect(() => {
     if (storedUserString) {
-      const storedUser: User = JSON.parse(storedUserString);
+      const storedUser: CreateUser = JSON.parse(storedUserString);
       setUserLogged(storedUser);
     }
-  }, []);
+  }, [storedUserString]);
 
-  const withLoading =
-    (func) =>
-    async (...args) => {
-      setIsLoading(true);
-      try {
-        await func(...args);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const withLoading = <T,>(
+    func: (arg: T) => Promise<void>
+  ) =>
+  async (arg: T) => {
+    setIsLoading(true);
+    try {
+      await func(arg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleCreateUser = withLoading(async (newUser: User) => {
-    const sameEmail = await Requests.checkSameEmail(newUser);
+
+  const handleCreateUser = withLoading<CreateUser>(async (newUser) => {
+    const { email } = newUser;
+    const sameEmail = await Requests.checkSameEmail({ newEmail: email });
     if (!sameEmail) {
       await Requests.createUser(newUser);
     }
   });
 
-  const handleLogin = withLoading(async ({ email, password }: User) => {
+  const handleLogin = withLoading<LogInUser>(async ({ email, password }) => {
     const user = await Requests.logInUser({ email, password });
     if (user) {
       setUserLogged(user);
@@ -57,7 +64,7 @@ export default function App() {
       <Toaster />
 
       <FirstPage
-        isLogged={storedUserString}
+        userLogged={!!userLogged}
         handleLogin={handleLogin}
         handleCreateUser={handleCreateUser}
         isLoading={isLoading}
@@ -65,8 +72,8 @@ export default function App() {
       {storedUserString && (
         <UserMainPage
           isLoading={isLoading}
-          userLoggedIn={userLogged}
-          isLogged={storedUserString}
+          userLogged={userLogged}
+          isLogged={!!storedUserString}
           userSignOut={() => {
             setUserLogged(null);
           }}

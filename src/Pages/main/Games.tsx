@@ -1,42 +1,44 @@
 import { useEffect, useState } from "react";
 import { GameCard } from "../../Shared/GameCard";
-import { Requests } from "../../api";
+import { FavoriteGameEntry, Requests } from "../../api";
 import toast from "react-hot-toast";
-
-type Game = {
-  id: number;
-  name: string;
-  image: string;
-  releaseDate: string;
-  developer: string;
-  price?: number;
-};
-
-type FavoriteGame = {
-  id?: number;
-  userId: number;
-  gameId: number;
-};
+import { Game } from "./UserMainPage";
 
 export function Games({
   allGames,
   isLoading,
   findUserId,
   isCartActive,
+  searchInput,
 }: {
   allGames: Game[];
   isLoading: boolean;
   findUserId: number;
   isCartActive: boolean;
+  searchInput: string;
 }) {
   const [allFavoriteGamesIds, setAllFavoriteGamesIds] = useState<
-    FavoriteGame[]
+    FavoriteGameEntry[]
   >([]);
   const [allFavoriteGames, setAllFavoriteGames] = useState<Game[]>([]);
-  const GamesToShow = isCartActive ? allFavoriteGames : allGames;
+
+  const favoriteSearchedGames = allFavoriteGames.filter((game) =>
+    game.name.toLowerCase().startsWith(searchInput.toLowerCase())
+  );
+  const searchedGames = allGames.filter((game) =>
+    game.name.toLowerCase().startsWith(searchInput.toLowerCase())
+  );
+
+  const gamesToShow = isCartActive
+    ? searchInput.length === 0
+      ? allFavoriteGames
+      : favoriteSearchedGames
+    : searchInput.length === 0
+    ? allGames
+    : searchedGames;
 
   useEffect(() => {
-    Requests.getGame({ findUserId }).then(setAllFavoriteGamesIds);
+    Requests.getGame({ findUserId: findUserId }).then(setAllFavoriteGamesIds);
   }, [findUserId]);
 
   useEffect(() => {
@@ -49,52 +51,38 @@ export function Games({
     }
   }, [isCartActive, allFavoriteGamesIds, allGames]);
 
-  const handleAddFavoriteGame = (addGame: number) => {
-    const newFavoriteGame: FavoriteGame = {
-      userId: findUserId,
-      gameId: addGame,
-    };
-    setAllFavoriteGamesIds((prevGames) => [...prevGames, newFavoriteGame]);
-
-    Requests.addFavoriteGame({ userId: findUserId, gameId: addGame })
-      .then((response: FavoriteGame) => {
-        setAllFavoriteGamesIds((prevGames) => [
-          ...prevGames.filter((game) => game.gameId !== addGame),
-          response,
-        ]);
-      })
-      .catch((err) => {
-        toast.error("Error adding favorite game:", err);
-        setAllFavoriteGamesIds((prevGames) =>
-          prevGames.filter((game) => game.gameId !== addGame)
-        );
+  const handleAddFavoriteGame = (gameId: number) => {
+    const newFavorite = { userId: findUserId, gameId };
+    Requests.addFavoriteGame(newFavorite)
+      .then((newFavorite) =>
+        setAllFavoriteGamesIds((prev) => [...prev, newFavorite])
+      )
+      .catch((error) => {
+        toast.error("Error adding favorite game: " + error.message);
       });
   };
 
-  const handleRemoveFavoriteGame = (deleteGame: number) => {
-    const updatedFavorites = allFavoriteGamesIds.filter(
-      (entry) => entry.gameId !== deleteGame
+  const handleRemoveFavoriteGame = (gameId: number) => {
+    const favoriteGameEntry = allFavoriteGamesIds.find(
+      (entry) => entry.gameId === gameId
     );
-    setAllFavoriteGamesIds(updatedFavorites);
-    const removeFavoriteGame = allFavoriteGamesIds
-      .filter((entry) => entry.gameId === deleteGame)
-      .map((entry) => entry.id);
 
-    const deleteFavoriteGame: FavoriteGame = {
-      userId: findUserId,
-      gameId: deleteGame,
-      id: removeFavoriteGame,
-    };
-
-    Requests.removeFavoriteGame({ removeFavoriteGame }).catch((err) => {
-      toast.error("Error removing favorite game:", err);
-      setAllFavoriteGamesIds((prevGames) => [...prevGames, deleteFavoriteGame]);
-    });
+    if (favoriteGameEntry && favoriteGameEntry.id) {
+      Requests.removeFavoriteGame(favoriteGameEntry.id)
+        .then(() =>
+          setAllFavoriteGamesIds((prev) =>
+            prev.filter((game) => game.gameId !== gameId)
+          )
+        )
+        .catch((error) => {
+          toast.error("Error removing favorite game: " + error.message);
+        });
+    }
   };
 
   return (
     <div className="cards-folder">
-      {GamesToShow.map((item) => (
+      {gamesToShow.map((item) => (
         <GameCard
           game={{
             image: item.image,
@@ -103,7 +91,7 @@ export function Games({
             developer: item.developer,
           }}
           isFavorite={allFavoriteGamesIds
-            .map((game) => game.gameId)
+            .map((fan) => fan.gameId)
             .includes(item.id)}
           key={item.id}
           onUnfavoriteClick={() => {
