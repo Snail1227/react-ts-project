@@ -44,12 +44,7 @@ export function UserMainPage({
   };
 
   const handleGameSearch = (searchInput: string) => {
-    console.log(searchInput);
-    if (searchInput.length === 0) {
-      setSearchInput("");
-    } else {
-      setSearchInput(searchInput);
-    }
+    setSearchInput(searchInput);
   };
   return (
     <div className="container">

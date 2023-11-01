@@ -1,13 +1,6 @@
-export const baseUrl = "http://localhost:3000";
+import { CreateUser, LogInUser } from "./App";
 
-type User = {
-  fullName?: string;
-  email?: string;
-  password?: string;
-  findUserId?: string;
-  userId?: string;
-  gameId?: number;
-};
+export const baseUrl = "http://localhost:3000";
 
 export type FavoriteGameEntry = {
   userId: number;
@@ -15,9 +8,8 @@ export type FavoriteGameEntry = {
   id?: number;
 };
 
-
 export const Requests = {
-  createUser: ({ fullName, email, password }: User) => {
+  createUser: ({ fullName, email, password }: CreateUser) => {
     return fetch(`${baseUrl}/users`, {
       method: "POST",
       headers: {
@@ -35,7 +27,7 @@ export const Requests = {
       return response.json();
     });
   },
-  checkSameEmail: ({ newEmail }: {newEmail: string}) => {
+  checkSameEmail: ({ newEmail }: { newEmail: string }) => {
     return fetch(`${baseUrl}/users`, {
       method: "GET",
       headers: {
@@ -44,15 +36,18 @@ export const Requests = {
     })
       .then((response) => response.json())
       .then((users) => {
-        const checkEmail = users.find((user: string) => user.email === newEmail);
+        const checkEmail = users.find(
+          (user: CreateUser) => user.email === newEmail
+        );
+        console.log(newEmail);
         if (checkEmail) {
-          throw new Error(`${email} is already in use`);
+          throw new Error(`${newEmail} is already in use`);
         }
         return false;
       });
   },
 
-  logInUser: ({ email, password }: User) => {
+  logInUser: ({ email, password }: LogInUser) => {
     return fetch(`${baseUrl}/users`, {
       method: "GET",
       headers: {
@@ -66,7 +61,7 @@ export const Requests = {
         return response.json();
       })
       .then((users) => {
-        const user = users.find((user: User) => user.email === email);
+        const user = users.find((user: CreateUser) => user.email === email);
         if (!user) {
           throw new Error("User Not found");
         }
@@ -93,7 +88,7 @@ export const Requests = {
     });
   },
 
-  getGame: ({ findUserId }: {findUserId: number}) => {
+  getGame: ({ findUserId }: { findUserId: number }) => {
     return fetch(`${baseUrl}/favoriteGame`, {
       method: "GET",
       headers: {
@@ -131,7 +126,7 @@ export const Requests = {
     });
   },
 
-  removeFavoriteGame: (favoriteGameId : number) => {
+  removeFavoriteGame: (favoriteGameId: number) => {
     return fetch(`${baseUrl}/favoriteGame/${favoriteGameId}`, {
       method: "DELETE",
       headers: {

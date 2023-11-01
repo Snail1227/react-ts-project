@@ -2,33 +2,18 @@
   "favoriteGame": [
     {
       "userId": 3,
-      "gameId": 1,
+      "gameId": 2,
       "id": 1
     },
     {
-      "userId": 2,
+      "userId": 3,
       "gameId": 3,
-      "id": 4
-    },
-    {
-      "userId": 2,
-      "gameId": 2,
-      "id": 5
-    },
-    {
-      "userId": 2,
-      "gameId": 5,
-      "id": 6
-    },
-    {
-      "userId": 3,
-      "gameId": 2,
-      "id": 7
+      "id": 2
     },
     {
       "userId": 3,
       "gameId": 5,
-      "id": 8
+      "id": 3
     }
   ],
   "games": [

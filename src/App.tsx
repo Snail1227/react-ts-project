@@ -14,7 +14,7 @@ export type CreateUser = {
 export type LogInUser = {
   email: string;
   password: string;
-}
+};
 
 export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,39 +30,42 @@ export default function App() {
     }
   }, [storedUserString]);
 
-  const withLoading = <T,>(
-    func: (arg: T) => Promise<void>
-  ) =>
-  async (arg: T) => {
-    setIsLoading(true);
-    try {
-      await func(arg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const withLoading =
+    <T,>(func: (arg: T) => Promise<void>) =>
+    async (arg: T) => {
+      setIsLoading(true);
+      try {
+        await func(arg);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+  const handleUserInStorage = (user: CreateUser) => {
+    setUserLogged(user);
+    localStorage.setItem("User", JSON.stringify(user));
+  };
 
   const handleCreateUser = withLoading<CreateUser>(async (newUser) => {
     const { email } = newUser;
     const sameEmail = await Requests.checkSameEmail({ newEmail: email });
     if (!sameEmail) {
-      await Requests.createUser(newUser);
+      await Requests.createUser(newUser).then((user) => {
+        handleUserInStorage(user);
+      });
     }
   });
 
   const handleLogin = withLoading<LogInUser>(async ({ email, password }) => {
     const user = await Requests.logInUser({ email, password });
     if (user) {
-      setUserLogged(user);
-      localStorage.setItem("User", JSON.stringify(user));
+      handleUserInStorage(user);
     }
   });
 
   return (
     <>
       <Toaster />
-
       <FirstPage
         userLogged={!!userLogged}
         handleLogin={handleLogin}

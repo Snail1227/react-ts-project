@@ -25,15 +25,16 @@ export function FirstPage({
   const changeButtonText = showSignUp
     ? "Change to Sign In"
     : "Change to Sign Up";
-
+  console.log(!userLogged);
   return (
     <div className="form">
       <div>
-        {showSignUp ? (
-          <SignUp handleCreateUser={handleCreateUser} isLoading={isLoading} />
-        ) : (
-          !userLogged && <SignIn onSignIn={handleLogin} isLoading={isLoading} />
-        )}
+        {!userLogged &&
+          (showSignUp ? (
+            <SignUp handleCreateUser={handleCreateUser} isLoading={isLoading} />
+          ) : (
+            <SignIn onSignIn={handleLogin} isLoading={isLoading} />
+          ))}
       </div>
       {!userLogged && (
         <button className="logIn-signUp" onClick={handleChangeForm}>

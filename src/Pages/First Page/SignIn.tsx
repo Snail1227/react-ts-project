@@ -20,7 +20,7 @@ export function SignIn({ onSignIn, isLoading }: SignInProps) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    onSignIn({
+    onSignIn({ 
       email: emailInput,
       password: passwordInput,
     })
