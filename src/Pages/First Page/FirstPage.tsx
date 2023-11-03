@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { SignIn } from "./SignIn";
 import { SignUp } from "./SignUp";
 import { CreateUser, LogInUser } from "../../App";
@@ -17,30 +17,44 @@ export function FirstPage({
   isLoading,
 }: FirstPageProps) {
   const [showSignUp, setShowSignUp] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const handleChangeForm = () => {
-    setShowSignUp((prevState) => !prevState);
+    if (formRef.current) {
+      formRef.current.classList.add('flip-exit');
+      setTimeout(() => {
+        setShowSignUp((prevState) => !prevState);
+        formRef.current?.classList.remove('flip-exit');
+        formRef.current?.classList.add('flip-enter');
+      }, 500);
+    }
   };
 
-  const changeButtonText = showSignUp
-    ? "Change to Sign In"
-    : "Change to Sign Up";
-  console.log(!userLogged);
+  useEffect(() => {
+    if (formRef.current) {
+      formRef.current.classList.add('flip-enter');
+      const timeoutId = setTimeout(() => {
+        formRef.current?.classList.remove('flip-enter');
+      }, 500);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showSignUp]);
+
   return (
     <div className="form">
-      <div>
-        {!userLogged &&
-          (showSignUp ? (
-            <SignUp handleCreateUser={handleCreateUser} isLoading={isLoading} />
-          ) : (
-            <SignIn onSignIn={handleLogin} isLoading={isLoading} />
-          ))}
+      <div className="form-container" ref={formRef}>
+        {!userLogged && (
+          <button className="logIn-signUp" onClick={handleChangeForm}>
+            {showSignUp ? 'Change to Sign In' : 'Change to Sign Up'}
+          </button>
+        )}
+        {!userLogged && (showSignUp ? (
+          <SignUp handleCreateUser={handleCreateUser} isLoading={isLoading} />
+        ) : (
+          <SignIn onSignIn={handleLogin} isLoading={isLoading} />
+        ))}
       </div>
-      {!userLogged && (
-        <button className="logIn-signUp" onClick={handleChangeForm}>
-          {changeButtonText}
-        </button>
-      )}
     </div>
   );
 }

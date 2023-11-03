@@ -2,7 +2,7 @@
   "favoriteGame": [
     {
       "userId": 3,
-      "gameId": 2,
+      "gameId": 1,
       "id": 1
     },
     {
@@ -14,6 +14,11 @@
       "userId": 3,
       "gameId": 5,
       "id": 3
+    },
+    {
+      "userId": 3,
+      "gameId": 7,
+      "id": 4
     }
   ],
   "games": [

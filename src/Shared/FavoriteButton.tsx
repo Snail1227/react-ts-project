@@ -1,4 +1,10 @@
-export const FavoriteButton = ({ onClick, disabled }) => (
+export const FavoriteButton = ({
+  onClick,
+  disabled,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+}) => (
   <button
     className="unfavorite-button"
     onClick={() => {

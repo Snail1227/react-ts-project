@@ -1,5 +1,5 @@
 export function CardButton()  {
     return (
-        <button class="shopping-cart"></button>
+        <button className="shopping-cart"></button>
     )
 }

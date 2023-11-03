@@ -1,4 +1,10 @@
-export const UnfavoriteButton = ({ disabled, onClick }) => (
+export const UnfavoriteButton = ({
+  onClick,
+  disabled,
+}: {
+  onClick: () => void;
+  disabled: boolean;
+}) => (
   <button
     className="favorite-button"
     onClick={() => {
@@ -6,7 +12,7 @@ export const UnfavoriteButton = ({ disabled, onClick }) => (
         onClick();
       }
     }}
-  > 
+  >
     Add to cart
   </button>
 );
